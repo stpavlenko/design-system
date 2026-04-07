@@ -1,0 +1,65 @@
+name: Sync Figma Tokens
+
+on:
+  workflow_dispatch:
+    inputs:
+      figma_file_key:
+        description: 'Figma file key (из URL файла)'
+        required: true
+        type: string
+  schedule:
+    # Каждый понедельник в 09:00 UTC (12:00 MSK)
+    - cron: '0 9 * * 1'
+
+jobs:
+  sync-tokens:
+    name: Sync Tokens from Figma
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync tokens from Figma
+        run: npm run tokens:sync
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          FIGMA_FILE_KEY: ${{ github.event.inputs.figma_file_key || secrets.FIGMA_FILE_KEY }}
+
+      - name: Build CSS from tokens
+        run: npm run tokens:build
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet src/tokens/ || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore(tokens): sync design tokens from Figma'
+          title: '🎨 Обновление дизайн-токенов из Figma'
+          body: |
+            Автоматическое обновление дизайн-токенов из Figma Variables API.
+
+            **Изменённые файлы:**
+            - `src/tokens/tokens.json` — исходные токены
+            - `src/tokens/tokens.css` — CSS custom properties
+
+            > Проверьте визуальные изменения в Storybook перед мержем.
+          branch: chore/sync-figma-tokens
+          base: main
+          labels: |
+            tokens
+            automated

@@ -1,0 +1,112 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  width: 100%;
+}
+
+.label {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-700);
+  line-height: var(--line-height-normal);
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  border: 2px solid var(--color-neutral-300);
+  border-radius: var(--radius-md);
+  background-color: var(--color-neutral-0);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.wrapper:focus-within {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px var(--color-primary-50);
+}
+
+.wrapper.error {
+  border-color: var(--color-error-500);
+}
+
+.wrapper.error:focus-within {
+  box-shadow: 0 0 0 3px var(--color-error-50);
+}
+
+.wrapper.disabled {
+  background-color: var(--color-neutral-100);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-family-sans);
+  color: var(--color-neutral-900);
+  width: 100%;
+}
+
+.input::placeholder {
+  color: var(--color-neutral-500);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--color-neutral-500);
+}
+
+/* === Sizes === */
+
+.size-sm {
+  padding: var(--spacing-1) var(--spacing-2);
+  min-height: 32px;
+}
+
+.size-sm .input {
+  font-size: var(--font-size-sm);
+}
+
+.size-md {
+  padding: var(--spacing-2) var(--spacing-3);
+  min-height: 40px;
+}
+
+.size-md .input {
+  font-size: var(--font-size-md);
+}
+
+.size-lg {
+  padding: var(--spacing-3) var(--spacing-4);
+  min-height: 48px;
+}
+
+.size-lg .input {
+  font-size: var(--font-size-lg);
+}
+
+/* === Helper / Error text === */
+
+.errorText {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-xs);
+  color: var(--color-error-500);
+  line-height: var(--line-height-normal);
+}
+
+.helperText {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-xs);
+  color: var(--color-neutral-600);
+  line-height: var(--line-height-normal);
+}

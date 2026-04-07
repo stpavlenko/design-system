@@ -1,0 +1,99 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family-sans);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+/* === Variants === */
+
+.variant-success {
+  background-color: var(--color-success-50);
+  color: var(--color-success-700);
+}
+
+.variant-warning {
+  background-color: var(--color-warning-50);
+  color: var(--color-warning-700);
+}
+
+.variant-error {
+  background-color: var(--color-error-50);
+  color: var(--color-error-700);
+}
+
+.variant-info {
+  background-color: var(--color-info-50);
+  color: var(--color-info-700);
+}
+
+.variant-neutral {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+}
+
+/* === Sizes === */
+
+.size-sm {
+  padding: var(--spacing-0) var(--spacing-2);
+  font-size: var(--font-size-xs);
+  min-height: 20px;
+}
+
+.size-md {
+  padding: var(--spacing-1) var(--spacing-3);
+  font-size: var(--font-size-sm);
+  min-height: 24px;
+}
+
+.size-lg {
+  padding: var(--spacing-1) var(--spacing-4);
+  font-size: var(--font-size-md);
+  min-height: 28px;
+}
+
+/* === Dot variant === */
+
+.dot {
+  padding: 0;
+  min-height: 0;
+}
+
+.dot.size-sm {
+  width: 8px;
+  height: 8px;
+}
+
+.dot.size-md {
+  width: 10px;
+  height: 10px;
+}
+
+.dot.size-lg {
+  width: 12px;
+  height: 12px;
+}
+
+.dot.variant-success {
+  background-color: var(--color-success-500);
+}
+
+.dot.variant-warning {
+  background-color: var(--color-warning-500);
+}
+
+.dot.variant-error {
+  background-color: var(--color-error-500);
+}
+
+.dot.variant-info {
+  background-color: var(--color-info-500);
+}
+
+.dot.variant-neutral {
+  background-color: var(--color-neutral-500);
+}

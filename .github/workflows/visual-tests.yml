@@ -1,0 +1,50 @@
+name: Visual Regression Tests (Testplane)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: visual-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  visual-tests:
+    name: Testplane Visual Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Run Testplane visual tests
+        run: npm run test:visual:ci
+
+      - name: Upload Testplane report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: testplane-report
+          path: testplane/reports/
+          retention-days: 14
+
+      - name: Upload reference screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: testplane-screens
+          path: src/components/*/screens/
+          retention-days: 14
