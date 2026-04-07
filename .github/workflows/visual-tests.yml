@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   visual-tests:
-    name: Testplane Visual Tests
+    name: Testplane Visual Snapshots
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,8 +29,8 @@ jobs:
         with:
           chrome-version: stable
 
-      - name: Run Testplane visual tests
-        run: npm run test:visual:ci
+      - name: Generate visual snapshots
+        run: npx testplane --storybook --update-refs
 
       - name: Upload Testplane report
         uses: actions/upload-artifact@v4
@@ -40,10 +40,10 @@ jobs:
           path: testplane/reports/
           retention-days: 14
 
-      - name: Upload reference screenshots
+      - name: Upload visual snapshots
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: testplane-screens
+          name: visual-snapshots
           path: src/components/*/screens/
           retention-days: 14
