@@ -1,28 +1,26 @@
-/**
- * Конфигурация Testplane для визуального регрессионного тестирования.
- *
- * Плагин @testplane/storybook автоматически генерирует скриншотные тесты
- * из Storybook stories, а также позволяет писать кастомные тесты.
- *
- * Скриншоты хранятся рядом с компонентами в папке screens/.
- *
- * Документация: https://testplane.io/ru/docs/v8/plugins/testplane-storybook/
- */
+import 'dotenv/config';
+import { renderCommand } from './testplane-tools/testsServer/render';
+
+// CSS imports are no-ops in Node.js context (actual styles are handled by webpack)
+require.extensions['.css'] = function(mod: any) {
+    mod.exports = new Proxy({}, { get: () => '' });
+};
 
 module.exports = {
     sets: {
         desktop: {
-            files: ['testplane/tests/**/*.testplane.ts'],
+            files: ['src/components/**/*.testplane.tsx'],
             browsers: ['chrome'],
         },
     },
 
     browsers: {
         chrome: {
-            automationProtocol: 'devtools',
+            automationProtocol: 'webdriver',
             desiredCapabilities: {
                 browserName: 'chrome',
             },
+            gridUrl: process.env.SELENOID_URL!,
             windowSize: {
                 width: 1280,
                 height: 800,
@@ -32,43 +30,20 @@ module.exports = {
     },
 
     screenshotsDir: (test: any) => {
-        // test — Mocha Test объект с parent-цепочкой:
-        //   test.parent.title = "Default" (имя story)
-        //   test.parent.parent.title = "Badge" (имя компонента)
-        //   test.fullTitle() = "Components Badge Default Autoscreenshot"
-
-        const componentName = test.parent?.parent?.title || '';
-        const storyName = test.parent?.title || '';
-
-        if (componentName && storyName) {
-            // Результат: src/components/Badge/screens/Default/plain.png
-            return `src/components/${componentName}/screens/${storyName}`;
+        // test.file: "src/components/Button/Button.testplane.tsx"
+        const fileMatch = (test.file as string | undefined)?.match(/src\/components\/([\w-]+)\//);
+        const componentName = fileMatch?.[1] ?? '';
+        if (componentName) {
+            return `src/components/${componentName}/screens`;
         }
+        return `testplane/screens/${test.id ?? 'unknown'}`;
+    },
 
-        // Fallback через fullTitle
-        if (typeof test.fullTitle === 'function') {
-            const full = test.fullTitle();
-            // "Components Badge Default Autoscreenshot" → ["Components", "Badge", "Default", "Autoscreenshot"]
-            const parts = full.split(' ').filter((p: string) => p && p !== 'Autoscreenshot');
-            if (parts.length >= 3) {
-                // parts[0] = "Components", parts[1] = "Badge", parts[2..] = "Default" / "All Variants"
-                const comp = parts[1];
-                const story = parts.slice(2).join('-');
-                return `src/components/${comp}/screens/${story}`;
-            }
-        }
-
-        return `testplane/screens/${test.id || 'unknown'}`;
+    prepareBrowser: async (browser: WebdriverIO.Browser) => {
+        browser.addCommand('render', renderCommand);
     },
 
     plugins: {
-        '@testplane/storybook': {
-            enabled: true,
-            localport: 6006,
-            remoteStorybookUrl: process.env.STORYBOOK_URL || '',
-            autoScreenshots: true,
-            storybookConfigDir: '.storybook',
-        },
         'html-reporter/testplane': {
             enabled: true,
             path: 'testplane/reports',
