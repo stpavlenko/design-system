@@ -1,0 +1,46 @@
+name: Visual Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: visual-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  visual-tests:
+    name: Screenshot Tests (Testplane + Selenoid)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: rm -f package-lock.json && npm install
+
+      - name: Run visual tests
+        env:
+          SELENOID_URL: http://94.183.151.232:4444/wd/hub
+          S3_ENDPOINT: http://94.183.151.232:9000
+          S3_BUCKET: testplane-bundles
+          S3_REGION: us-east-1
+          S3_BASE_URL: http://94.183.151.232:9000/testplane-bundles
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TESTS_SERVER_PORT: 3000
+          TESTS_SERVER_URL: http://localhost:3000
+        run: npm run test:visual:ci
+
+      - name: Upload Testplane HTML report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: testplane-report
+          path: testplane/reports/
+          retention-days: 7
