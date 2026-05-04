@@ -37,10 +37,16 @@ jobs:
           TESTS_SERVER_URL: http://localhost:3000
         run: npm run test:visual:ci
 
-      - name: Upload Testplane HTML report
-        uses: actions/upload-artifact@v4
+      - name: Publish report to MinIO
         if: always()
-        with:
-          name: testplane-report
-          path: testplane/reports/
-          retention-days: 7
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          REPORT_KEY="reports/run-${{ github.run_id }}"
+          aws s3 sync testplane/reports/ s3://testplane-bundles/${REPORT_KEY}/ \
+            --endpoint-url http://94.183.151.232:9000 \
+            --no-progress
+          REPORT_URL="http://94.183.151.232:9000/testplane-bundles/${REPORT_KEY}/index.html"
+          echo "### Testplane Report" >> $GITHUB_STEP_SUMMARY
+          echo "[Открыть отчёт](${REPORT_URL})" >> $GITHUB_STEP_SUMMARY
