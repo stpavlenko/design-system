@@ -6,19 +6,19 @@
 }
 
 .label {
-  font-family: var(--font-family-sans);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-family: var(--typography-fontFamily-sans);
+  font-size: var(--typography-fontSize-xs);
+  font-weight: var(--typography-fontWeight-medium);
   color: var(--color-neutral-700);
-  line-height: var(--line-height-normal);
+  line-height: var(--typography-lineHeight-normal);
 }
 
 .wrapper {
   display: flex;
   align-items: center;
   gap: var(--spacing-2);
-  border: 2px solid var(--color-neutral-300);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--color-neutral-300);
+  border-radius: var(--borderRadius-md);
   background-color: var(--color-neutral-0);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
@@ -36,9 +36,9 @@
   box-shadow: 0 0 0 3px var(--color-error-50);
 }
 
+/* Disabled: только светлая рамка, без изменения фона */
 .wrapper.disabled {
-  background-color: var(--color-neutral-100);
-  opacity: 0.6;
+  border-color: var(--color-neutral-100);
   cursor: not-allowed;
 }
 
@@ -47,17 +47,18 @@
   border: none;
   outline: none;
   background: transparent;
-  font-family: var(--font-family-sans);
+  font-family: var(--typography-fontFamily-sans);
   color: var(--color-neutral-900);
   width: 100%;
 }
 
 .input::placeholder {
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-400);
 }
 
 .input:disabled {
   cursor: not-allowed;
+  color: var(--color-neutral-400);
 }
 
 .icon {
@@ -74,7 +75,7 @@
 }
 
 .size-sm .input {
-  font-size: var(--font-size-sm);
+  font-size: var(--typography-fontSize-sm);
 }
 
 .size-md {
@@ -83,7 +84,7 @@
 }
 
 .size-md .input {
-  font-size: var(--font-size-md);
+  font-size: var(--typography-fontSize-xs);
 }
 
 .size-lg {
@@ -92,21 +93,21 @@
 }
 
 .size-lg .input {
-  font-size: var(--font-size-lg);
+  font-size: var(--typography-fontSize-md);
 }
 
 /* === Helper / Error text === */
 
 .errorText {
-  font-family: var(--font-family-sans);
-  font-size: var(--font-size-xs);
+  font-family: var(--typography-fontFamily-sans);
+  font-size: var(--typography-fontSize-xs);
   color: var(--color-error-500);
-  line-height: var(--line-height-normal);
+  line-height: var(--typography-lineHeight-normal);
 }
 
 .helperText {
-  font-family: var(--font-family-sans);
-  font-size: var(--font-size-xs);
+  font-family: var(--typography-fontFamily-sans);
+  font-size: var(--typography-fontSize-xs);
   color: var(--color-neutral-600);
-  line-height: var(--line-height-normal);
+  line-height: var(--typography-lineHeight-normal);
 }

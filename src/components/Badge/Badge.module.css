@@ -2,10 +2,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-family-sans);
-  font-weight: var(--font-weight-medium);
+  font-family: var(--typography-fontFamily-sans);
+  font-weight: var(--typography-fontWeight-semibold);
   line-height: 1;
-  border-radius: var(--radius-full);
+  border-radius: var(--borderRadius-full);
   white-space: nowrap;
 }
 
@@ -39,20 +39,20 @@
 /* === Sizes === */
 
 .size-sm {
-  padding: var(--spacing-0) var(--spacing-2);
-  font-size: var(--font-size-xs);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: var(--typography-fontSize-xs);
   min-height: 20px;
 }
 
 .size-md {
   padding: var(--spacing-1) var(--spacing-3);
-  font-size: var(--font-size-sm);
+  font-size: var(--typography-fontSize-sm);
   min-height: 24px;
 }
 
 .size-lg {
   padding: var(--spacing-1) var(--spacing-4);
-  font-size: var(--font-size-md);
+  font-size: var(--typography-fontSize-md);
   min-height: 28px;
 }
 

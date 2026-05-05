@@ -36,4 +36,32 @@ describe('Badge', () => {
     render(<Badge>Тест</Badge>);
     expect(screen.getByRole('status')).toBeInTheDocument();
   });
+
+  // ─── Figma состояния (CarCard) ────────────────────────────────────────────
+
+  it('success variant — Figma: Новый', () => {
+    const { container } = render(<Badge variant="success">Новый</Badge>);
+    expect(container.firstChild as HTMLElement).toHaveTextContent('Новый');
+    expect((container.firstChild as HTMLElement).className).toContain('variant-success');
+  });
+
+  it('neutral variant — Figma: С пробегом', () => {
+    const { container } = render(<Badge variant="neutral">С пробегом</Badge>);
+    expect((container.firstChild as HTMLElement).className).toContain('variant-neutral');
+  });
+
+  it('warning variant — Figma: Скидка', () => {
+    const { container } = render(<Badge variant="warning">Скидка</Badge>);
+    expect((container.firstChild as HTMLElement).className).toContain('variant-warning');
+  });
+
+  it('size sm применяется (используется в CarCard)', () => {
+    const { container } = render(<Badge variant="success" size="sm">Новый</Badge>);
+    expect((container.firstChild as HTMLElement).className).toContain('size-sm');
+  });
+
+  it('применяет size md по умолчанию', () => {
+    const { container } = render(<Badge>Текст</Badge>);
+    expect((container.firstChild as HTMLElement).className).toContain('size-md');
+  });
 });

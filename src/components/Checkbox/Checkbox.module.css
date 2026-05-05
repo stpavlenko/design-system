@@ -1,0 +1,112 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  cursor: pointer;
+  padding: var(--spacing-2) 0;
+}
+
+.wrapper.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Скрытый нативный input — доступен для AT, невидим визуально */
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Кастомный визуальный чекбокс */
+.box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-neutral-400);
+  border-radius: var(--borderRadius-sm);
+  background-color: var(--color-neutral-0);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.boxChecked,
+.boxIndeterminate {
+  background-color: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+}
+
+.boxDisabled {
+  border-color: var(--color-neutral-300);
+  background-color: var(--color-neutral-0);
+}
+
+.boxChecked.boxDisabled,
+.boxIndeterminate.boxDisabled {
+  background-color: var(--color-primary-500);
+  border-color: var(--color-primary-500);
+  opacity: 0.4;
+}
+
+/* Фокус-индикатор через нативный input */
+.input:focus-visible + .box {
+  box-shadow: 0 0 0 3px var(--color-primary-50);
+  border-color: var(--color-primary-500);
+}
+
+/* Ховер */
+.wrapper:not(.disabled):hover .box {
+  border-color: var(--color-primary-400);
+}
+
+/* Error state */
+.wrapper.hasError .box {
+  border-color: var(--color-error-500);
+}
+
+.input:focus-visible + .wrapper.hasError .box {
+  box-shadow: 0 0 0 3px var(--color-error-50);
+}
+
+.label {
+  font-family: var(--typography-fontFamily-sans);
+  font-size: var(--typography-fontSize-sm);
+  color: var(--color-neutral-900);
+  line-height: var(--typography-lineHeight-normal);
+  user-select: none;
+}
+
+.wrapper.disabled .label {
+  color: var(--color-neutral-400);
+}
+
+.errorText {
+  font-family: var(--typography-fontFamily-sans);
+  font-size: var(--typography-fontSize-xs);
+  color: var(--color-error-500);
+  line-height: var(--typography-lineHeight-normal);
+}
+
+.helperText {
+  font-family: var(--typography-fontFamily-sans);
+  font-size: var(--typography-fontSize-xs);
+  color: var(--color-neutral-600);
+  line-height: var(--typography-lineHeight-normal);
+}
