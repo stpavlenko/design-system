@@ -43,7 +43,7 @@ export function buildTestFile(absTestPath: string): Promise<BuildResult> {
                         {
                             loader: 'css-loader',
                             options: {
-                                modules: { localIdentName: '[name]__[local]' },
+                                modules: { localIdentName: '[name]__[local]', exportLocalsConvention: 'asIs' },
                                 esModule: false,
                             },
                         },

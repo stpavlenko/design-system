@@ -1,7 +1,7 @@
 /*
  * Дизайн-токены — автоматически сгенерировано из Figma Variables JSON
  * Не редактируйте вручную! Источник: src/tokens/tokens.tokens.json
- * Сгенерировано: 2026-05-10T11:05:43.661Z
+ * Сгенерировано: 2026-05-10T18:10:36.918Z
  */
 
 :root {
@@ -57,13 +57,13 @@
   /* Typography */
   --typography-fontFamily-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --typography-fontFamily-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-  --typography-fontSize-xs: 12;
-  --typography-fontSize-sm: 14;
-  --typography-fontSize-md: 16;
-  --typography-fontSize-lg: 18;
-  --typography-fontSize-xl: 20;
-  --typography-fontSize-2xl: 24;
-  --typography-fontSize-3xl: 30;
+  --typography-fontSize-xs: 12px;
+  --typography-fontSize-sm: 14px;
+  --typography-fontSize-md: 16px;
+  --typography-fontSize-lg: 18px;
+  --typography-fontSize-xl: 20px;
+  --typography-fontSize-2xl: 24px;
+  --typography-fontSize-3xl: 30px;
   --typography-fontWeight-regular: 400;
   --typography-fontWeight-medium: 500;
   --typography-fontWeight-semibold: 600;

@@ -33,19 +33,26 @@ function isLeaf(node: FigmaNode | FigmaLeaf): node is FigmaLeaf {
     return '$type' in node;
 }
 
-function getUnit(category: string, subCategory: string): string {
-    if (category === 'spacing' || category === 'borderRadius') return 'px';
-    if (category === 'typography' && subCategory === 'fontSize') return 'px';
+function getUnit(varName: string): string {
+    if (varName.startsWith('spacing-') || varName.startsWith('borderRadius-')) return 'px';
+    if (varName.startsWith('typography-fontSize-')) return 'px';
     return '';
 }
 
-function convertValue(leaf: FigmaLeaf, category: string, subCategory: string): string {
+function rgbToHex(r: number, g: number, b: number): string {
+    return '#' + [r, g, b]
+        .map(v => Math.round(v * 255).toString(16).padStart(2, '0').toUpperCase())
+        .join('');
+}
+
+function convertValue(leaf: FigmaLeaf, prefix: string): string {
     if (leaf.$type === 'color') {
-        return (leaf.$value as FigmaColorValue).hex;
+        const val = leaf.$value as FigmaColorValue;
+        return rgbToHex(val.components[0], val.components[1], val.components[2]);
     }
     if (leaf.$type === 'number') {
         const num = leaf.$value as number;
-        const unit = getUnit(category, subCategory);
+        const unit = getUnit(prefix);
         return unit ? `${num}${unit}` : String(num);
     }
     return String(leaf.$value);
@@ -55,21 +62,17 @@ type FlatTokens = Map<string, string>;
 
 function parseNode(
     node: FigmaNode | FigmaLeaf,
-    category: string,
-    subCategory: string,
     prefix: string,
     result: FlatTokens,
 ): void {
     if (isLeaf(node)) {
-        result.set(`--${prefix}`, convertValue(node, category, subCategory));
+        result.set(`--${prefix}`, convertValue(node, prefix));
         return;
     }
     for (const [key, child] of Object.entries(node)) {
         if (key === '$extensions') continue;
         parseNode(
             child as FigmaNode | FigmaLeaf,
-            category,
-            key,
             prefix ? `${prefix}-${key}` : key,
             result,
         );
@@ -126,7 +129,7 @@ function main(): void {
     const tokens: FlatTokens = new Map();
     for (const [category, node] of Object.entries(raw)) {
         if (category === '$extensions') continue;
-        parseNode(node as FigmaNode | FigmaLeaf, category, '', category, tokens);
+        parseNode(node as FigmaNode | FigmaLeaf, category, tokens);
     }
 
     const css = generateCSS(tokens);
