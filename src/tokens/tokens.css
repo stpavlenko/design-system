@@ -1,7 +1,7 @@
-/* 
- * Дизайн-токены — автоматически сгенерировано из tokens.json
- * Не редактируйте вручную! Используйте: npm run tokens:build
- * Сгенерировано: 2026-04-07T18:42:59.971Z
+/*
+ * Дизайн-токены — автоматически сгенерировано из Figma Variables JSON
+ * Не редактируйте вручную! Источник: src/tokens/tokens.tokens.json
+ * Сгенерировано: 2026-05-10T11:05:43.661Z
  */
 
 :root {
@@ -57,13 +57,13 @@
   /* Typography */
   --typography-fontFamily-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --typography-fontFamily-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-  --typography-fontSize-xs: 12px;
-  --typography-fontSize-sm: 14px;
-  --typography-fontSize-md: 16px;
-  --typography-fontSize-lg: 18px;
-  --typography-fontSize-xl: 20px;
-  --typography-fontSize-2xl: 24px;
-  --typography-fontSize-3xl: 30px;
+  --typography-fontSize-xs: 12;
+  --typography-fontSize-sm: 14;
+  --typography-fontSize-md: 16;
+  --typography-fontSize-lg: 18;
+  --typography-fontSize-xl: 20;
+  --typography-fontSize-2xl: 24;
+  --typography-fontSize-3xl: 30;
   --typography-fontWeight-regular: 400;
   --typography-fontWeight-medium: 500;
   --typography-fontWeight-semibold: 600;
@@ -79,14 +79,4 @@
   --borderRadius-lg: 12px;
   --borderRadius-xl: 16px;
   --borderRadius-full: 9999px;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-
-  /* Transitions */
-  --transition-fast: 150ms ease;
-  --transition-normal: 250ms ease;
-  --transition-slow: 350ms ease;
 }

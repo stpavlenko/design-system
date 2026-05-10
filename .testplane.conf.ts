@@ -26,6 +26,10 @@ module.exports = {
                 height: 800,
             },
             screenshotDelay: 100,
+            sessionsPerBrowser: 2,
+            assertViewOpts: {
+                tolerance: 2.3,
+            },
         },
     },
 

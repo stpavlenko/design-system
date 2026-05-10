@@ -16,8 +16,7 @@
         "test:visual:update": "concurrently -k -s first \"npm run tests:server\" \"wait-on http://localhost:3000/health && npx testplane --update-refs\"",
         "test:visual:gui": "concurrently -k -s first \"npm run tests:server\" \"wait-on http://localhost:3000/health && npx testplane gui\"",
         "test:visual:ci": "concurrently -k -s first \"npm run tests:server\" \"wait-on http://localhost:3000/health && npx testplane\"",
-        "tokens:build": "tsx scripts/transform-tokens-to-css.ts",
-        "tokens:figma": "tsx scripts/generate-figma-json.ts",
+        "tokens:sync": "tsx scripts/sync-tokens.ts",
         "lint": "eslint src/",
         "typecheck": "tsc --noEmit"
     },

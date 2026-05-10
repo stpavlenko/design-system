@@ -1,19 +1,14 @@
-name: Sync Figma Tokens
+name: Sync Design Tokens from Figma Export
 
 on:
+  push:
+    paths:
+      - 'src/tokens/tokens.tokens.json'
   workflow_dispatch:
-    inputs:
-      figma_file_key:
-        description: 'Figma file key (из URL файла)'
-        required: true
-        type: string
-  schedule:
-    # Каждый понедельник в 09:00 UTC (12:00 MSK)
-    - cron: '0 9 * * 1'
 
 jobs:
   sync-tokens:
-    name: Sync Tokens from Figma
+    name: Parse Figma Export → tokens.json + tokens.css
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -28,32 +23,32 @@ jobs:
       - name: Install dependencies
         run: rm -f package-lock.json && npm install
 
-      - name: Sync tokens from Figma
+      - name: Parse Figma Variables JSON → tokens.json + tokens.css
         run: npm run tokens:sync
-        env:
-          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
-          FIGMA_FILE_KEY: ${{ github.event.inputs.figma_file_key || secrets.FIGMA_FILE_KEY }}
-
-      - name: Build CSS from tokens
-        run: npm run tokens:build
 
       - name: Check for changes
         id: changes
         run: |
-          git diff --quiet src/tokens/ || echo "changed=true" >> $GITHUB_OUTPUT
+          git diff --quiet src/tokens/tokens.json src/tokens/tokens.css || echo "changed=true" >> $GITHUB_OUTPUT
 
       - name: Create Pull Request
         if: steps.changes.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'chore(tokens): sync design tokens from Figma'
-          title: '🎨 Обновление дизайн-токенов из Figma'
+          commit-message: 'chore(tokens): sync design tokens from Figma export'
+          title: 'Обновление дизайн-токенов из Figma'
           body: |
-            Автоматическое обновление дизайн-токенов из Figma Variables API.
+            Автоматическое обновление токенов из экспорта Figma Variables.
+
+            **Как экспортировать переменные из Figma:**
+            1. Открыть файл в Figma
+            2. File → Export Variables → JSON
+            3. Сохранить файл как `src/tokens/tokens.tokens.json`
+            4. Закоммитить — этот workflow запустится автоматически
 
             **Изменённые файлы:**
-            - `src/tokens/tokens.json` — исходные токены
+            - `src/tokens/tokens.json` — канонический формат токенов
             - `src/tokens/tokens.css` — CSS custom properties
 
             > Проверьте визуальные изменения в Storybook перед мержем.
