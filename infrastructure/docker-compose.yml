@@ -1,0 +1,81 @@
+services:
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: minio
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # Web console
+    volumes:
+      - minio-data:/data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-admin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-changeme}
+    command: server /data --console-address :9001
+    restart: always
+
+  chrome-puller:
+    image: docker:cli
+    container_name: chrome-puller
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: docker pull selenoid/chrome:128.0
+    restart: "no"
+
+  selenoid:
+    image: aerokube/selenoid:1.11.3
+    container_name: selenoid
+    hostname: localhost
+    depends_on:
+      chrome-puller:
+        condition: service_completed_successfully
+    networks:
+      - selenoid
+    ports:
+      - "4444:4444"
+    volumes:
+      - ./selenoid:/etc/selenoid:ro
+      - ./selenoid/video:/opt/selenoid/video
+      - ./selenoid/logs:/opt/selenoid/logs
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      OVERRIDE_VIDEO_OUTPUT_DIR: /opt/selenoid/video
+      DOCKER_API_VERSION: "1.40"
+    command:
+      - -conf
+      - /etc/selenoid/browsers.json
+      - -video-output-dir
+      - /opt/selenoid/video/
+      - -video-recorder-image
+      - selenoid/video-recorder:latest-release
+      - -log-output-dir
+      - /opt/selenoid/logs/
+      - -container-network
+      - selenoid
+    restart: always
+
+  selenoid-ui:
+    image: aerokube/selenoid-ui:1.10.11
+    container_name: selenoid-ui
+    hostname: localhost
+    networks:
+      - selenoid
+    ports:
+      - "8080:8080"
+    command:
+      - --selenoid-uri=http://selenoid:4444
+    healthcheck:
+      test: ["/health-check"]
+      interval: 30s
+      timeout: 2s
+      start_period: 2s
+      retries: 2
+    depends_on:
+      - selenoid
+    restart: always
+
+networks:
+  selenoid:
+    name: selenoid
+
+volumes:
+  minio-data:
