@@ -1,4 +1,4 @@
-name: CI — Unit & A11y Tests + Deploy Storybook
+name: CI
 
 on:
   push:
