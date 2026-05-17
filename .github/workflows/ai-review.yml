@@ -63,12 +63,12 @@ jobs:
           REVIEW__MAX_INLINE_COMMENTS: "10"
           REVIEW__INLINE_COMMENT_FALLBACK: "true"
           # Анализируем только компоненты дизайн-системы:
-          REVIEW__ALLOW_CHANGES: '["design-system/src/components/**"]'
-          REVIEW__IGNORE_CHANGES: '["design-system/src/components/**/*.stories.tsx", "design-system/src/components/**/screens/**", "design-system/src/tokens/tokens.css"]'
+          REVIEW__ALLOW_CHANGES: '["src/components/**"]'
+          REVIEW__IGNORE_CHANGES: '["src/components/**/*.stories.tsx", "src/components/**/screens/**", "src/tokens/tokens.css"]'
 
           # --- Prompts: подключаем наши правила и список токенов ---
-          PROMPT__INLINE_PROMPT_FILES: '["design-system/.ai-review/inline-rules.md", "design-system/src/tokens/tokens.css"]'
-          PROMPT__SUMMARY_PROMPT_FILES: '["design-system/.ai-review/summary-rules.md"]'
+          PROMPT__INLINE_PROMPT_FILES: '[".ai-review/inline-rules.md", "src/tokens/tokens.css"]'
+          PROMPT__SUMMARY_PROMPT_FILES: '[".ai-review/summary-rules.md"]'
 
           # --- Core ---
           CORE__CONCURRENCY: "5"
