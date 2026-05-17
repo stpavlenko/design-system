@@ -26,14 +26,17 @@
 
 /* Primary: синяя заливка */
 .variant-primary {
-  background-color: var(--color-primary-500);
-  color: var(--color-neutral-0);
-  border-color: var(--color-primary-500);
+  background-color: #0066FF;
+  color: #FFFFFF;
+  border-color: #0066FF;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .variant-primary:hover:not(.disabled) {
-  background-color: var(--color-primary-700);
-  border-color: var(--color-primary-700);
+  background-color: rgb(0, 61, 153);
+  border-color: rgb(0, 61, 153);
 }
 
 .variant-primary:active:not(.disabled) {
