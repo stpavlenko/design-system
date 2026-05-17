@@ -98,11 +98,12 @@ design-system/
 
 ## CI/CD
 
-Проект использует три GitHub Actions workflow:
+Проект использует четыре GitHub Actions workflow:
 
 1. **CI** (`ci.yml`) — lint, typecheck, unit-тесты, a11y-тесты, сборка Storybook
 2. **Visual Tests** (`visual-tests.yml`) — визуальное регрессионное тестирование через Testplane
 3. **Tokens Sync** (`tokens-sync.yml`) — автоматическая синхронизация токенов из Figma (по расписанию + ручной запуск)
+4. **AI Review** (`ai-review.yml`) — автоматическое ревью PR на соответствие дизайн-системе. Использует action [`Nikita-Filonov/ai-review`](https://github.com/Nikita-Filonov/ai-review) + OpenAI-совместимый LLM (по умолчанию — бесплатная модель Qwen2.5-Coder через OpenRouter). Правила и список токенов лежат в `.ai-review/`. Требуется секрет `OPENROUTER_API_KEY` в настройках репозитория.
 
 ## Лицензия
 

@@ -1,0 +1,78 @@
+name: AI Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      pull-request-number:
+        description: "Pull Request number to review"
+        type: string
+        required: true
+      review-command:
+        description: "Review command (mode)"
+        type: choice
+        default: "run"
+        options:
+          - run
+          - run-inline
+          - run-summary
+          - clear-inline
+          - clear-summary
+
+concurrency:
+  group: ai-review-${{ github.event.pull_request.number || inputs.pull-request-number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  ai-review:
+    name: Run AI Review
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run AI Review
+        uses: Nikita-Filonov/ai-review@v0.66.0
+        env:
+          # --- LLM provider: OpenRouter (OpenAI-compatible), free Qwen Coder ---
+          LLM__PROVIDER: "OPENAI"
+          LLM__META__MODEL: "anthropic/claude-sonnet-4.5"
+          LLM__META__MAX_TOKENS: "4000"
+          LLM__META__TEMPERATURE: "0.2"
+          LLM__HTTP_CLIENT__API_URL: "https://openrouter.ai/api/v1"
+          LLM__HTTP_CLIENT__API_TOKEN: ${{ secrets.OPENROUTER_API_KEY }}
+
+          # --- VCS: GitHub ---
+          VCS__PROVIDER: "GITHUB"
+          VCS__PIPELINE__OWNER: ${{ github.repository_owner }}
+          VCS__PIPELINE__REPO: ${{ github.event.repository.name }}
+          VCS__PIPELINE__PULL_NUMBER: ${{ github.event.pull_request.number || inputs.pull-request-number }}
+          VCS__HTTP_CLIENT__API_URL: "https://api.github.com"
+          VCS__HTTP_CLIENT__API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          # --- Review options ---
+          REVIEW__MODE: "ONLY_ADDED_WITH_CONTEXT"
+          REVIEW__CONTEXT_LINES: "5"
+          REVIEW__MAX_INLINE_COMMENTS: "10"
+          REVIEW__INLINE_COMMENT_FALLBACK: "true"
+          # Анализируем только компоненты дизайн-системы:
+          REVIEW__ALLOW_CHANGES: '["src/components/**"]'
+          REVIEW__IGNORE_CHANGES: '["src/components/**/*.stories.tsx", "src/components/**/screens/**", "src/tokens/tokens.css"]'
+
+          # --- Prompts: подключаем наши правила и список токенов ---
+          PROMPT__INLINE_PROMPT_FILES: '[".ai-review/inline-rules.md", "src/tokens/tokens.css"]'
+          PROMPT__SUMMARY_PROMPT_FILES: '[".ai-review/summary-rules.md"]'
+
+          # --- Core ---
+          CORE__CONCURRENCY: "5"
+          LOGGER__LEVEL: "INFO"
+
+        with:
+          review-command: ${{ inputs.review-command || 'run' }}
