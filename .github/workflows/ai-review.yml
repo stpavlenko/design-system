@@ -43,7 +43,7 @@ jobs:
         env:
           # --- LLM provider: OpenRouter (OpenAI-compatible), free Qwen Coder ---
           LLM__PROVIDER: "OPENAI"
-          LLM__META__MODEL: "qwen/qwen-2.5-coder-32b-instruct:free"
+          LLM__META__MODEL: "qwen/qwen3-coder:free"
           LLM__META__MAX_TOKENS: "4000"
           LLM__META__TEMPERATURE: "0.2"
           LLM__HTTP_CLIENT__API_URL: "https://openrouter.ai/api/v1"
@@ -76,4 +76,3 @@ jobs:
 
         with:
           review-command: ${{ inputs.review-command || 'run' }}
-          pull-request-number: ${{ github.event.pull_request.number || inputs.pull-request-number }}
