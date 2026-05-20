@@ -1,110 +1,44 @@
 # @vkr/design-system
 
-Дизайн-система с автоматизацией процессов тестирования и разработки компонентов.
+Учебная дизайн-система для ВКР на тему автоматизации разработки, тестирования и поддержки компонентов.
 
-> **ВКР** — Павленко Степан Евгеньевич, группа 221-321  
-> Направление: 09.03.01 Информатика и вычислительная техника, профиль «Веб-технологии»
+## Состав
 
-## Стек технологий
+1. React-компоненты: Button, Input, Badge, CarCard, Checkbox, Select.
+2. Документация компонентов в Storybook.
+3. Модульные тесты на Jest и Testing Library.
+4. Проверки доступности на axe-core и jest-axe.
+5. Визуальные тесты на Testplane через удалённый Chrome в Selenoid.
+6. Дизайн-токены: экспорт Figma Variables JSON преобразуется в CSS custom properties.
 
-| Категория | Инструмент | Версия |
-|-----------|-----------|--------|
-| Фреймворк | React | 18.x |
-| Язык | TypeScript | 5.x |
-| Документация | Storybook | ^8.3.5 |
-| Визуальные тесты | Testplane (ex-Hermione) | 8.35.2 |
-| A11y тесты | axe-core + jest-axe | latest |
-| Unit-тесты | Jest + @testing-library/react | latest |
-| Стилизация | CSS Modules + CSS custom properties | — |
-| CI/CD | GitHub Actions | — |
-| Дизайн-токены | Figma Variables API → JSON → CSS | — |
-
-## Компоненты
-
-- **Button** — кнопка с 4 вариантами (primary, secondary, outline, ghost) и 3 размерами
-- **Input** — поле ввода с label, error, helperText и иконками
-- **Badge** — бейдж/метка с 5 вариантами и dot-режимом
-- **Card** — карточка с 3 вариантами (elevated, outlined, filled)
-
-## Быстрый старт
+## Команды
 
 ```bash
-# Установка зависимостей
 npm install
-
-# Запуск Storybook (dev-сервер)
-npm run dev
-
-# Сборка Storybook
+npm run storybook
 npm run build:storybook
-```
-
-## Тестирование
-
-```bash
-# Все тесты (unit + a11y)
-npm test
-
-# Только unit-тесты
+npm run typecheck
 npm run test:unit
-
-# Только a11y-тесты (axe-core)
 npm run test:a11y
-
-# Визуальные тесты (Testplane + Storybook)
-# Требуется запущенный Storybook на порту 6006
 npm run test:visual
-
-# Обновить эталонные скриншоты
 npm run test:visual:update
+npm run tokens:sync
 ```
 
 ## Дизайн-токены
 
-```bash
-# Синхронизация токенов из Figma
-FIGMA_TOKEN=<token> FIGMA_FILE_KEY=<key> npm run tokens:sync
+Файл `src/tokens/tokens.tokens.json` — экспорт Figma Variables в JSON.
 
-# Генерация CSS custom properties из tokens.json
-npm run tokens:build
+Команда `npm run tokens:sync` читает этот файл и генерирует `src/tokens/tokens.css`.
 
-# Полный цикл: sync + build
-FIGMA_TOKEN=<token> FIGMA_FILE_KEY=<key> npm run tokens:update
-```
+## Визуальное тестирование
 
-## Структура проекта
+Визуальные тесты используют Testplane, локальный testsServer, MinIO и удалённый Chrome в Selenoid. Подробности описаны в `testplane-tools/VISUAL_TESTING.md`.
 
-```
-design-system/
-├── .storybook/           # Конфигурация Storybook
-├── .github/workflows/    # CI/CD пайплайны
-├── scripts/              # Скрипты автоматизации
-│   ├── sync-figma-tokens.ts
-│   └── transform-tokens-to-css.ts
-├── src/
-│   ├── tokens/           # Дизайн-токены (JSON + CSS)
-│   └── components/       # React-компоненты
-│       ├── Button/
-│       ├── Input/
-│       ├── Badge/
-│       └── Card/
-├── testplane/            # Визуальные тесты
-│   ├── tests/
-│   └── screens/          # Эталонные скриншоты
-├── package.json
-├── tsconfig.json
-└── jest.config.ts
-```
+## CI
 
-## CI/CD
+В проекте используются три workflow GitHub Actions:
 
-Проект использует четыре GitHub Actions workflow:
-
-1. **CI** (`ci.yml`) — lint, typecheck, unit-тесты, a11y-тесты, сборка Storybook
-2. **Visual Tests** (`visual-tests.yml`) — визуальное регрессионное тестирование через Testplane
-3. **Tokens Sync** (`tokens-sync.yml`) — автоматическая синхронизация токенов из Figma (по расписанию + ручной запуск)
-4. **AI Review** (`ai-review.yml`) — автоматическое ревью PR на соответствие дизайн-системе. Использует action [`Nikita-Filonov/ai-review`](https://github.com/Nikita-Filonov/ai-review) + OpenAI-совместимый LLM (по умолчанию — бесплатная модель Qwen2.5-Coder через OpenRouter). Правила и список токенов лежат в `.ai-review/`. Требуется секрет `OPENROUTER_API_KEY` в настройках репозитория.
-
-## Лицензия
-
-MIT
+1. `ci.yml` — проверка типов, модульные тесты, тесты доступности, сборка и публикация Storybook.
+2. `visual-tests.yml` — визуальные тесты через Testplane, Selenoid и MinIO.
+3. `ai-review.yml` — автоматическая проверка изменений в компонентах по правилам дизайн-системы.
