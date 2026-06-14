@@ -1,50 +1,46 @@
 # Визуальное регрессионное тестирование
 
+Перед первым запуском разверните инфраструктуру на своём VPS — см. раздел «Настройка под свою команду» в [README.md](../README.md).
+
 Скриншотные тесты запускаются через [Testplane](https://github.com/gemini-testing/testplane) и используют удалённый Chrome в [Selenoid](https://aerokube.com/selenoid/) — одинаковый браузер на всех машинах, никакого локального Chrome.
 
 ## Архитектура
 
-```
-npm run test:visual
-       │
-       ├─ testsServer (localhost:3000)
-       │       │
-       │       ├─ webpack: Component.testplane.tsx → index.html + bundle.js
-       │       └─ MinIO S3: загружает оба файла → возвращает URL
-       │
-       └─ Testplane
-               │
-       ├─ browser.render(<JSX>)
-       │       └─ GET /build/?testFile=...  →  url
-       │          browser.url(url?test=<fullTitle>)
-       │          waitUntil window.__testplane_ready__
-               │
-               └─ browser.assertView('state name', '#root')
-                       └─ Selenoid (VPS 94.183.151.232:4444)
-                          Chrome 128 → открывает URL из MinIO → скриншот
+```mermaid
+flowchart TD
+  start["npm run test:visual"] --> parallel["testsServer :3000 + Testplane"]
+  parallel --> render["Testplane: browser.render"]
+  render --> request["GET /build/?testFile=..."]
+  request --> server["testsServer обрабатывает запрос"]
+  server --> webpack["webpack → index.html + bundle.js"]
+  webpack --> upload["upload в MinIO → URL"]
+  upload --> selenoid["Selenoid: browser.url URL?test=..."]
+  selenoid --> assert["assertPageView: скриншот"]
+  assert --> compare["Сравнение с screens/*.png"]
 ```
 
 Ключевой принцип: Selenoid открывает страницу **напрямую из MinIO**, поэтому не нужен публичный доступ к локальной машине разработчика.
+
+Webpack **не** крутится заранее — сборка запускается только после `GET /build/?testFile=...` из `browser.render()` (см. `testsServer/server.ts`).
 
 ## Инфраструктура
 
 | Сервис | Адрес | Описание |
 |--------|-------|----------|
-| Selenoid | `94.183.151.232:4444` | WebDriver-grid, Chrome 128 в Docker |
-| MinIO | `94.183.151.232:9000` | S3-совместимое хранилище для бандлов |
+| Selenoid | `<VPS_HOST>:4444` | WebDriver-grid, Chrome 128 в Docker |
+| MinIO | `<VPS_HOST>:9000` | S3-совместимое хранилище для бандлов |
 | testsServer | `localhost:3000` | Локальный сервер сборки (запускается автоматически) |
 
-Оба сервиса запущены на VPS в Docker и не требуют ручного запуска перед тестами.
+`<VPS_HOST>` — IP вашего VPS из `.env` (в `.env.example` указан пример). Selenoid и MinIO разворачиваются через `infrastructure/docker-compose.yml` и не требуют ручного запуска перед тестами.
 
 ## Переменные окружения
 
 Файл `.env` в корне проекта (не коммитится):
 
 ```dotenv
-VPS_HOST=94.183.151.232
+VPS_HOST=<IP_вашего_VPS>   # обязательно; для CI — repository variable VPS_HOST
 
 S3_BUCKET=testplane-bundles
-S3_REGION=us-east-1
 AWS_ACCESS_KEY_ID=admin
 AWS_SECRET_ACCESS_KEY=<secret>
 TESTS_SERVER_PORT=3000

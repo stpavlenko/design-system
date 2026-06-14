@@ -14,9 +14,8 @@ permissions:
   contents: read
 
 env:
-  VPS_HOST: 94.183.151.232
-  S3_BUCKET: testplane-bundles
-  S3_REGION: us-east-1
+  VPS_HOST: ${{ vars.VPS_HOST }}
+  S3_BUCKET: ${{ vars.S3_BUCKET }}
   TESTS_SERVER_PORT: 3000
   TESTS_SERVER_URL: http://localhost:3000
 
@@ -26,6 +25,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - name: Check required variables
+        run: |
+          if [ -z "$VPS_HOST" ]; then
+            echo "::error::Задайте repository variable VPS_HOST (Settings → Secrets and variables → Actions → Variables)"
+            exit 1
+          fi
+          if [ -z "$S3_BUCKET" ]; then
+            echo "S3_BUCKET not set, using default: testplane-bundles"
+            echo "S3_BUCKET=testplane-bundles" >> "$GITHUB_ENV"
+          fi
+
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
