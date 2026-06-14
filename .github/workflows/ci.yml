@@ -25,9 +25,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Install dependencies
-        run: rm -f package-lock.json && npm install
+        run: npm ci
+
+      - name: ESLint
+        run: npm run lint
 
       - name: TypeScript typecheck
         run: npm run typecheck
@@ -42,9 +46,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Install dependencies
-        run: rm -f package-lock.json && npm install
+        run: npm ci
 
       - name: Run unit tests
         run: npm run test:unit -- --coverage --ci
@@ -67,9 +72,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Install dependencies
-        run: rm -f package-lock.json && npm install
+        run: npm ci
 
       - name: Run a11y tests
         run: npm run test:a11y -- --ci
@@ -88,9 +94,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Install dependencies
-        run: rm -f package-lock.json && npm install
+        run: npm ci
 
       - name: Build Storybook
         run: npm run build:storybook

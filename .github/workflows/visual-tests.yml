@@ -1,4 +1,4 @@
-name: CI
+name: Visual Tests
 
 on:
   push:
@@ -10,43 +10,63 @@ concurrency:
   group: visual-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
+env:
+  VPS_HOST: 94.183.151.232
+  S3_BUCKET: testplane-bundles
+  S3_REGION: us-east-1
+  TESTS_SERVER_PORT: 3000
+  TESTS_SERVER_URL: http://localhost:3000
+
 jobs:
   visual-tests:
     name: Screenshot Tests (Testplane + Selenoid)
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
       - name: Install dependencies
-        run: rm -f package-lock.json && npm install
+        run: npm ci
 
       - name: Run visual tests
         env:
-          SELENOID_URL: http://94.183.151.232:4444/wd/hub
-          S3_ENDPOINT: http://94.183.151.232:9000
-          S3_BUCKET: testplane-bundles
-          S3_REGION: us-east-1
-          S3_BASE_URL: http://94.183.151.232:9000/testplane-bundles
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          TESTS_SERVER_PORT: 3000
-          TESTS_SERVER_URL: http://localhost:3000
         run: npm run test:visual:ci
+
+      - name: Upload Testplane report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: testplane-report-${{ github.run_id }}
+          path: testplane/reports/
+          retention-days: 14
 
       - name: Publish report to MinIO
         if: always()
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
         run: |
+          if [ ! -f testplane/reports/index.html ]; then
+            echo "Report not found, skipping MinIO upload"
+            exit 0
+          fi
+
           REPORT_KEY="reports/run-${{ github.run_id }}"
-          aws s3 sync testplane/reports/ s3://testplane-bundles/${REPORT_KEY}/ \
-            --endpoint-url http://94.183.151.232:9000 \
+          aws s3 sync testplane/reports/ "s3://${S3_BUCKET}/${REPORT_KEY}/" \
+            --endpoint-url "http://${VPS_HOST}:9000" \
             --no-progress
-          REPORT_URL="http://94.183.151.232:9000/testplane-bundles/${REPORT_KEY}/index.html"
-          echo "### Testplane Report" >> $GITHUB_STEP_SUMMARY
-          echo "[Открыть отчёт](${REPORT_URL})" >> $GITHUB_STEP_SUMMARY
+
+          REPORT_URL="http://${VPS_HOST}:9000/${S3_BUCKET}/${REPORT_KEY}/index.html"
+          echo "### Testplane Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "[Открыть отчёт](${REPORT_URL})" >> "$GITHUB_STEP_SUMMARY"

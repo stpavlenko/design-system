@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "types": ["node", "@testplane/webdriverio"]
+    },
+    "include": [
+        "src/**/*.testplane.tsx",
+        "src/types/testplane-globals.d.ts",
+        "src/types/css-modules.d.ts"
+    ],
+    "exclude": ["node_modules"]
+}
