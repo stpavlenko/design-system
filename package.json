@@ -17,21 +17,24 @@
         "test:visual:gui": "concurrently -k -s first \"npm run tests:server\" \"wait-on http://localhost:3000/health && npx testplane gui\"",
         "test:visual:ci": "concurrently -k -s first \"npm run tests:server\" \"wait-on http://localhost:3000/health && npx testplane\"",
         "tokens:sync": "tsx scripts/sync-tokens.ts",
-        "lint": "eslint src/",
-        "typecheck": "tsc --noEmit"
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "typecheck": "tsc --noEmit && tsc -p tsconfig.testplane.json --noEmit"
     },
     "dependencies": {
         "react": "^18.3.1",
         "react-dom": "^18.3.1"
     },
     "devDependencies": {
-        "@aws-sdk/client-s3": "^3.600.0",
+        "@aws-sdk/client-s3": "^3.758.0",
+        "@eslint/js": "^9.28.0",
         "@storybook/addon-a11y": "^8.3.5",
         "@storybook/addon-essentials": "^8.3.5",
         "@storybook/addon-interactions": "^8.3.5",
         "@storybook/react": "^8.3.5",
         "@storybook/react-vite": "^8.3.5",
         "@storybook/test": "^8.3.5",
+        "@stylistic/eslint-plugin": "^4.2.0",
         "@testing-library/jest-dom": "^6.6.3",
         "@testing-library/react": "^16.1.0",
         "@testplane/storybook": "^1.7.6",
@@ -45,7 +48,10 @@
         "concurrently": "^9.2.1",
         "css-loader": "^7.1.4",
         "dotenv": "^17.4.2",
-        "express": "^5.2.1",
+        "eslint": "^9.28.0",
+        "eslint-plugin-react-hooks": "^5.2.0",
+        "express": "^4.21.2",
+        "globals": "^16.2.0",
         "html-reporter": "^11.9.3",
         "html-webpack-plugin": "^5.6.7",
         "identity-obj-proxy": "^3.0.0",
@@ -60,6 +66,7 @@
         "ts-node": "^10.9.2",
         "tsx": "^4.19.2",
         "typescript": "^5.7.2",
+        "typescript-eslint": "^8.34.0",
         "vite": "^6.0.0",
         "wait-on": "^9.0.5",
         "webpack": "^5.106.2"

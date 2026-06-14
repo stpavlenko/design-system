@@ -27,7 +27,10 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: rm -f package-lock.json && npm install
+        run: npm install --no-audit --no-fund
+
+      - name: ESLint
+        run: npm run lint
 
       - name: TypeScript typecheck
         run: npm run typecheck
@@ -44,7 +47,7 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: rm -f package-lock.json && npm install
+        run: npm install --no-audit --no-fund
 
       - name: Run unit tests
         run: npm run test:unit -- --coverage --ci
@@ -69,7 +72,7 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: rm -f package-lock.json && npm install
+        run: npm install --no-audit --no-fund
 
       - name: Run a11y tests
         run: npm run test:a11y -- --ci
@@ -90,7 +93,7 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: rm -f package-lock.json && npm install
+        run: npm install --no-audit --no-fund
 
       - name: Build Storybook
         run: npm run build:storybook

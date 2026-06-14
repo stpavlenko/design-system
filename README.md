@@ -39,6 +39,6 @@ npm run tokens:sync
 
 В проекте используются три workflow GitHub Actions:
 
-1. `ci.yml` — проверка типов, модульные тесты, тесты доступности, сборка и публикация Storybook.
-2. `visual-tests.yml` — визуальные тесты через Testplane, Selenoid и MinIO.
+1. `ci.yml` — ESLint, проверка типов (включая Testplane), модульные тесты, тесты доступности, сборка и публикация Storybook.
+2. `visual-tests.yml` (workflow **Visual Tests**) — визуальные тесты через Testplane, Selenoid и MinIO; отчёт публикуется в MinIO и сохраняется как artifact GitHub Actions.
 3. `ai-review.yml` — автоматическая проверка изменений в компонентах по правилам дизайн-системы.

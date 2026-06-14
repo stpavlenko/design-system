@@ -1,141 +1,106 @@
+import type { TestFunctionCtx } from 'testplane';
 import React from 'react';
 import { Button } from './Button';
 
-export const renders: Record<string, () => React.ReactElement> = {
-    // Figma: Primary MD
-    'primary md': () => <Button variant="primary" size="md">Primary</Button>,
-    // Figma: Primary SM
-    'primary sm': () => <Button variant="primary" size="sm">Primary</Button>,
-    // Figma: Secondary MD
-    'secondary md': () => <Button variant="secondary" size="md">Secondary</Button>,
-    // Figma: Secondary SM
-    'secondary sm': () => <Button variant="secondary" size="sm">Secondary</Button>,
-    // Figma: Ghost MD
-    'ghost md': () => <Button variant="ghost" size="md">Ghost</Button>,
-    // Figma: Ghost SM
-    'ghost sm': () => <Button variant="ghost" size="sm">Ghost</Button>,
-    // Все варианты рядом
-    'all variants': () => (
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', padding: '16px' }}>
-            <Button variant="primary">Primary</Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="ghost">Ghost</Button>
-        </div>
-    ),
-    // Все размеры
-    'all sizes': () => (
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', padding: '16px' }}>
-            <Button variant="primary" size="sm">SM</Button>
-            <Button variant="primary" size="md">MD</Button>
-            <Button variant="primary" size="lg">LG</Button>
-        </div>
-    ),
-    // Disabled — opacity 30% (Figma)
-    'disabled primary': () => <Button variant="primary" size="md" disabled>Primary</Button>,
-    'disabled secondary': () => <Button variant="secondary" size="md" disabled>Secondary</Button>,
-    'disabled ghost': () => <Button variant="ghost" size="md" disabled>Ghost</Button>,
-    // Loading
-    loading: () => <Button variant="primary" loading>Загрузка</Button>,
-};
+describe('Button', () => {
+	it('primary variant MD', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="primary" size="md">Primary</Button>);
+		await this.browser.assertPageView('primary variant');
+	});
 
-const RENDERS = 'src/components/Button/Button.testplane.tsx';
+	it('primary variant SM', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="primary" size="sm">Primary</Button>);
+		await this.browser.assertPageView('primary variant SM');
+	});
 
-if (typeof describe !== 'undefined') {
-    describe('Button', () => {
-        // ─── Primary ───────────────────────────────────────────────
-        it('primary variant MD', async ({ browser }) => {
-            await browser.render(RENDERS, 'primary md');
-            await browser.assertView('primary variant', '#root');
-        });
+	it('primary hover state', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="primary" size="md">Primary</Button>);
+		await (await this.browser.$('button')).moveTo();
+		await this.browser.pause(150);
+		await this.browser.assertPageView('hover state');
+	});
 
-        it('primary variant SM', async ({ browser }) => {
-            await browser.render(RENDERS, 'primary sm');
-            await browser.assertView('primary variant SM', '#root');
-        });
+	it('secondary variant MD', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="secondary" size="md">Secondary</Button>);
+		await this.browser.assertPageView('secondary variant');
+	});
 
-        it('primary hover state', async ({ browser }) => {
-            await browser.render(RENDERS, 'primary md');
-            await (await browser.$('button')).moveTo();
-            await browser.pause(150);
-            await browser.assertView('hover state', '#root');
-        });
+	it('secondary variant SM', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="secondary" size="sm">Secondary</Button>);
+		await this.browser.assertPageView('secondary variant SM');
+	});
 
-        // ─── Secondary ─────────────────────────────────────────────
-        it('secondary variant MD', async ({ browser }) => {
-            await browser.render(RENDERS, 'secondary md');
-            await browser.assertView('secondary variant', '#root');
-        });
+	it('secondary hover state', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="secondary" size="md">Secondary</Button>);
+		await (await this.browser.$('button')).moveTo();
+		await this.browser.pause(150);
+		await this.browser.assertPageView('secondary hover state');
+	});
 
-        it('secondary variant SM', async ({ browser }) => {
-            await browser.render(RENDERS, 'secondary sm');
-            await browser.assertView('secondary variant SM', '#root');
-        });
+	it('ghost variant MD', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="ghost" size="md">Ghost</Button>);
+		await this.browser.assertPageView('ghost variant');
+	});
 
-        it('secondary hover state', async ({ browser }) => {
-            await browser.render(RENDERS, 'secondary md');
-            await (await browser.$('button')).moveTo();
-            await browser.pause(150);
-            await browser.assertView('secondary hover state', '#root');
-        });
+	it('ghost variant SM', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="ghost" size="sm">Ghost</Button>);
+		await this.browser.assertPageView('ghost variant SM');
+	});
 
-        // ─── Ghost ─────────────────────────────────────────────────
-        it('ghost variant MD', async ({ browser }) => {
-            await browser.render(RENDERS, 'ghost md');
-            await browser.assertView('ghost variant', '#root');
-        });
+	it('ghost hover state', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="ghost" size="md">Ghost</Button>);
+		await (await this.browser.$('button')).moveTo();
+		await this.browser.pause(150);
+		await this.browser.assertPageView('ghost hover state');
+	});
 
-        it('ghost variant SM', async ({ browser }) => {
-            await browser.render(RENDERS, 'ghost sm');
-            await browser.assertView('ghost variant SM', '#root');
-        });
+	it('all variants', async function(this: TestFunctionCtx) {
+		await this.browser.render(
+			<div style={{ display: 'flex', gap: '8px', alignItems: 'center', padding: '16px' }}>
+				<Button variant="primary">Primary</Button>
+				<Button variant="secondary">Secondary</Button>
+				<Button variant="ghost">Ghost</Button>
+			</div>,
+		);
+		await this.browser.assertPageView('all variants');
+	});
 
-        it('ghost hover state', async ({ browser }) => {
-            await browser.render(RENDERS, 'ghost md');
-            await (await browser.$('button')).moveTo();
-            await browser.pause(150);
-            await browser.assertView('ghost hover state', '#root');
-        });
+	it('all sizes', async function(this: TestFunctionCtx) {
+		await this.browser.render(
+			<div style={{ display: 'flex', gap: '8px', alignItems: 'center', padding: '16px' }}>
+				<Button variant="primary" size="sm">SM</Button>
+				<Button variant="primary" size="md">MD</Button>
+				<Button variant="primary" size="lg">LG</Button>
+			</div>,
+		);
+		await this.browser.assertPageView('all sizes');
+	});
 
-        // ─── Все варианты и размеры ────────────────────────────────
-        it('all variants', async ({ browser }) => {
-            await browser.render(RENDERS, 'all variants');
-            await browser.assertView('all variants', '#root');
-        });
+	it('disabled primary', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="primary" size="md" disabled>Primary</Button>);
+		await this.browser.assertPageView('disabled state');
+	});
 
-        it('all sizes', async ({ browser }) => {
-            await browser.render(RENDERS, 'all sizes', '#root');
-            await browser.assertView('all sizes', '#root');
-        });
+	it('disabled secondary', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="secondary" size="md" disabled>Secondary</Button>);
+		await this.browser.assertPageView('disabled secondary');
+	});
 
-        // ─── Disabled ──────────────────────────────────────────────
-        it('disabled primary', async ({ browser }) => {
-            await browser.render(RENDERS, 'disabled primary');
-            await browser.assertView('disabled state', '#root');
-        });
+	it('disabled ghost', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="ghost" size="md" disabled>Ghost</Button>);
+		await this.browser.assertPageView('disabled ghost');
+	});
 
-        it('disabled secondary', async ({ browser }) => {
-            await browser.render(RENDERS, 'disabled secondary');
-            await browser.assertView('disabled secondary', '#root');
-        });
+	it('loading state', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="primary" loading>Загрузка</Button>);
+		await this.browser.assertPageView('loading state');
+	});
 
-        it('disabled ghost', async ({ browser }) => {
-            await browser.render(RENDERS, 'disabled ghost');
-            await browser.assertView('disabled ghost', '#root');
-        });
-
-        // ─── Loading ───────────────────────────────────────────────
-        it('loading state', async ({ browser }) => {
-            await browser.render(RENDERS, 'loading');
-            await browser.assertView('loading state', '#root');
-        });
-
-        // ─── Focus ─────────────────────────────────────────────────
-        it('focus state', async ({ browser }) => {
-            await browser.render(RENDERS, 'primary md');
-            await browser.execute(() => {
-                (document.querySelector('button') as HTMLButtonElement)?.focus();
-            });
-            await browser.assertView('focus state', '#root');
-        });
-    });
-}
+	it('focus state', async function(this: TestFunctionCtx) {
+		await this.browser.render(<Button variant="primary" size="md">Primary</Button>);
+		await this.browser.execute(() => {
+			(document.querySelector('button') as HTMLButtonElement)?.focus();
+		});
+		await this.browser.assertPageView('focus state');
+	});
+});
