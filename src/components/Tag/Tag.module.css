@@ -1,0 +1,22 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: #F1F3F5;
+  color: #495057;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.highlighted {
+  background-color: #E6F0FF;
+  color: #0066FF;
+}
+
+.big {
+  padding: 8px 12px;
+  font-size: 14px;
+}
